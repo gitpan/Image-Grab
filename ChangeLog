@@ -1,3 +1,32 @@
+2000-05-23  Mark A. Hershberger  <mah@everybody.org>
+
+	* lib/Image/Grab.pm (get_new): added a probably buggy version for
+	1.0
+	
+	
+2000-04-09  Mark A. Hershberger  <mah@everybody.org>
+
+	* lib/: Moved files under this hierarchy.
+	
+	* lib/Image/Grab.pod: Seperated POD from PM.  Fleshed out the docs
+	and rearranged them according to Tom Metro's suggestions.  Filled
+	in spec on grab_new, changed realm to auth and a couple of other
+	changes to encourage me to actually do them.
+
+	* README.pod: Added the file.  Removed duplication of man
+	page.
+	
+
+1999-11-08  Mark A. Hershberger  <mah@everybody.org>
+
+	* README: noted search_url.
+
+	* Grab.pm: Clarified docs on basis of Tom Metro (tmetro@vl.com)
+	suggestions.  Added search_url and removed overloading of regex
+	method.  Added ability to grab to accept named params.
+
+	* t/direct_grab.t: added test for named param grab.
+
 1999-06-12  Mark A. Hershberger  <mah@everybody.org>
 
 	* README: Noted do_posix.

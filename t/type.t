@@ -2,6 +2,12 @@
 # `make test'. After `make install' it should work as `perl test.pl'
 
 BEGIN { $| = 1; print "1..1\n"; }
+
+unless (-f 't/test') {
+  print "1..0\n";
+  exit 0;
+}
+
 use Image::Grab;
 
 my $image = new Image::Grab;

@@ -5,7 +5,7 @@
 # We make our own specialization of LWP::UserAgent that asks for
 # user/password if document is protected.
 
-# $Id: RequestAgent.pm,v 1.3 1999/05/18 18:09:22 hershbem Exp $
+# $Id: RequestAgent.pm,v 1.2 2000/04/10 03:49:57 mah Exp $
 
 package Image::Grab::RequestAgent;
 

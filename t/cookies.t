@@ -7,6 +7,11 @@ use diagnostics;
 # You need cookies for www.chron.com for this to work.
 # See http://www.chron.com/content/comics
 
+unless (-f 't/test') {
+  print "1..0\n";
+  exit 0;
+}
+
 if(-f "$ENV{HOME}/.netscape/cookies") {
   open(COOKIE, "$ENV{HOME}/.netscape/cookies");
   unless (grep {/www.chron.com/} <COOKIE>) {
@@ -50,7 +55,7 @@ foreach (@$toons)  {
   print "\turl:    ", $_->{url}, "\n" if defined $_->{url};
   print "\trefer:  ", $_->{refer}, "\n" if defined $_->{refer};
   print "\tregexp: ", $_->{regexp}, "\n" if defined $_->{regexp};
-  print "\treal:   ", $comic->{$name}->getRealURL, "\n";
+  print "\treal:   ", $comic->{$name}->expand_url, "\n";
 # getAllURLs should really be fixed so that it only has to fetch once.
   print "\t\t", join("\n\t\t", $comic->{$name}->getAllURLs), "\n" if $_->{refer};
 

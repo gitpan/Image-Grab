@@ -1,299 +1,47 @@
-Behavior Changes:
+NAME
+    Image::Grab - Perl module to easily grab images from the 'net.
 
-  Since 0.9.3, I've added the do_posix method and changed the behavior
-  so that POSIX date substitution is only done if do_posix is set.
-  This is because strftime appears to garble the 128th character and
-  on in long string substitutions.  I've seen this in Digital Unix,
-  Linux and Solaris.
+*** WARNING ***
+        The tests will not succeed if you do not have an active net connection.
+
+Behavior Changes:
+    Since 0.9.5, I've added the search_url method in lieu of overloading regexp. This means that you'll have to check your scripts.
+
+    Since 0.9.3, I've added the do_posix method and changed the behavior so that POSIX date substitution is only done if do_posix is set.
+    This is because strftime appears to garble the 128th character and on in long string substitutions. I've seen this in Digital Unix,
+    Linux and Solaris.
 
 Installation:
+    You must have the following modules already installed:
 
-  You must have the following modules already installed:
+      Digest::MD5 2.07
+      HTML::Parser 2.20
+      HTML::Tree 0.51
+      MIME::Base64 2.11
+      URI 1.02
+      libnet 1.0606
+      libwww-perl 5.43
 
-    Digest::MD5 2.07
-    HTML::Parser 2.20
-    HTML::Tree 0.51
-    MIME::Base64 2.11
-    URI 1.02
-    libnet 1.0606
-    libwww-perl 5.43
+    (Earlier versions of some packages may work, but I haven't tested them.)
 
-  (Earlier versions of some packages may work, but I haven't tested
-  them.)
+      $ perl Makefile.PL
+      $ make test
+      $ make install
 
-  $ perl Makefile.PL
-  $ make test
-  $ make install
-
-  And that should do it.  Let me know of any problems (<mah@everybody.org>)
+    And that should do it. Let me know of any problems (<mah@everybody.org>)
 
 Testing:
+    [This information should be encapsulated in the tests themselves.]
 
-  Unless you have cookies for www.chron.com, the cookies.t test will
-  be skipped.  The tests rely on cookies being set in your
-  ~/.netscape/cookies file.  You could set these yourself by visiting
-  the Huston Chronicle website (http://www.chron/content/comics) and
-  getting an account.  If you don't do this, these tests won't even
-  run.
+    None of the tests will succeed unless you have an active 'net connection.
 
-  If you are testing this from behind a firewall, be sure that your
-  proxy environment variables are set correctly 
-  (e.g. http_proxy=http://wwwproxy:80/).
+    Unless you have cookies for www.chron.com, the cookies.t test will be skipped. The tests rely on cookies being set in your
+    ~/.netscape/cookies file. You could set these yourself by visiting the Huston Chronicle website (http://www.chron/content/comics) and
+    getting an account. If you don't do this, these tests won't even run.
+
+    If you are testing this from behind a firewall, be sure that your proxy environment variables are set correctly (e.g.
+    http_proxy=http://wwwproxy:80/).
 
 Response:
+    If you care to, let me know how you are using this module. It's nice to know what different people are using this for.
 
-  If you care to, let me know how you are using this module.  It's
-  nice to know what different people are using this for.
-
-     _________________________________________________________________
-   
-                                     NAME
-                                       
-   Image::Grab - Perl extension for Grabbing images off the Internet.
-     _________________________________________________________________
-   
-                                   SYNOPSIS
-                                       
-  use Image::Grab;
-  $pic = new Image::Grab;
-
-  # The simplest case of a grab
-  $pic->url('http://www.example.com/someimage.jpg')
-  $pic->grab;
-
-  # How to get at the image
-  open(DISPLAY, "| display -");
-  print DISPLAY $pic->image;
-  close(DISPLAY)
-
-  # A slightly more complicated case
-  $pic->url('.*logo.*\.gif');
-  $pic->refer('http://www.example.com');
-  $pic->grab;
-
-  # Get a weather forecast
-  $pic->url('msy.*\.gif');
-  $pic->refer('http://www.example.com/weather/msy/content.shtml');
-  $pic->grab;
-     _________________________________________________________________
-   
-                                  DESCRIPTION
-                                       
-   Image::Grab is a simple way to get images with URLs that change
-   constantly.
-   
-   The ``change constantly'' part is important here. If this module did
-   nothing but grab an image off the net, then it would be nothing more
-   than a silly convenience module. But this module is not silly.
-   
-   This module was born from a script. The script was born when a certain
-   Comics Syndicate stopped having a static (or even predictable) url for
-   their comics. I generalized the code for a friend when he needed to do
-   something similar.
-   
-   Hopefully, others will find this module useful as well.
-     _________________________________________________________________
-   
-                               Accessor Methods
-                                       
-   The following are the accessor methods available for any Image::Grab
-   object. Accessor methods are used to get or set information for an
-   object. For example,
-   
-  $img->refer("http://www.example.com";);
-
-   would set the refer field and
-   
-  $img->refer;
-
-   would return the information contained in the refer field.
-   
-   refer, regexp, and url all have POSIX time string expansion performed
-   on the by getRealURL. Thus, if you wish to have a '%' character in
-   your URL, you must put '%%'.
-     _________________________________________________________________
-   
-cookiefile
-
-   Where the cookiefile is located. Set this to the file containing the
-   cookies if you wish to use the cookie file for the image.
-     _________________________________________________________________
-   
-cookiejar
-
-   Usually only used internally. The cookiejar for the image.
-     _________________________________________________________________
-   
-do_posix
-
-   Tells Image::Grab to do POSIX date substitution. This is off by
-   default until a bug that I found is fixed.
-     _________________________________________________________________
-   
-date
-
-   The date that the image was last updated. The date is represented in
-   the number of seconds from epoch where epoch is January 1, 1970. This
-   is normally not set by the user.
-     _________________________________________________________________
-   
-image
-
-   The actual image. Usually, you should't try to set this field.
-     _________________________________________________________________
-   
-md5
-
-   The md5 sum for the image. Usually, you shouldn't try to set this
-   field.
-     _________________________________________________________________
-   
-refer
-
-   When you do a grab, this url will be given as the referring URL. If
-   the url method is not used to specify an image (and the regexp or
-   index methods are used instead) then the information from the URL in
-   the refer field will be used to find the image. For example, if
-   regexp=``mac.*\.gif'' and refer=``http://www.example.com'', then when
-   a grab is performed, the page at www.example.com is searched to see if
-   any images on the page match the regular expression.
-   
-   POSIX time string expansion is performed is do_posix is set.
-     _________________________________________________________________
-   
-type
-
-   The type of information. Usually it will be a MIME type such as
-   ``image/jpeg''.
-     _________________________________________________________________
-   
-ua
-
-   Usually only used internally. The user agent used to get the image.
-     _________________________________________________________________
-   
-                       Methods for specifying the image
-                                       
-   One of the following should be set to specify the image. If either
-   regexp or index are used to specify the image, then refer must be set
-   to specify the page to be searched for the image.
-   
-   Image::Grab will the data in the following order: url, regexp, index.
-     _________________________________________________________________
-   
-index
-
-   An integer indicating the image on the page to grab. For instance, '1'
-   would find the second image on the page pointed to by the refer. Used
-   in conjunction with regexp, it specifies which image to grab that the
-   regular expression matches.
-   
-   Example:
-   
-   $image->refer(``http://www.example.com/index.html'');
-   $image->regexp(1);
-     _________________________________________________________________
-   
-regexp
-
-   A regular expression that will match the URL of the image. If index is
-   not set, then the first image that matches will be used. If index is
-   set, then the nth image that matches will be used.
-   
-   POSIX time string expansion is performed if do_posix is set.
-   
-   Example:
-   
-   $image->refer(``http://www.example.com/index.html'');
-   $image->regexp(``.*\.gif'');
-     _________________________________________________________________
-   
-url
-
-   The fully qualified URL of the image.
-   
-   POSIX time string expansion is performed if do_posix is set.
-   
-   Example:
-   
-   $image->url(``http://www.example.com/%Y/%m/%d.gif'');
-     _________________________________________________________________
-   
-                                 Other Methods
-     _________________________________________________________________
-   
-realm($realm, $user, $password)
-
-   Provides a username/password pair for the realm the image is in.
-     _________________________________________________________________
-   
-getAllURLs ([$tries])
-
-   Returns a list of URLs pointing to images from the page pointed to by
-   refer. Of course, refer must be set for this method to be of any use.
-   
-   If $tries is specified, then $tries are attempted before giving up.
-   $tries defaults to 10.
-   
-   Returns undef if no connection is made in $tries attempts or if the
-   URL is not of type text/html.
-     _________________________________________________________________
-   
-getRealURL ([$tries])
-
-   Returns the actual URL of the image specified. Performs POSIX time
-   string expansion (see strftime) using the current time if do_posix is
-   set.
-   
-   You can use this method to get the URL for an image if that is all you
-   need.
-   
-   If $tries is specified, then $tries are attempted before giving up.
-   $tries defaults to 10.
-   
-   Returns undef if no connection is made in $tries attempts, if the
-   refer URL is not of type text/html, or if no image that matches the
-   specs is found.
-   
-   If url is given a full URL, then it is returned with POSIX time string
-   expansion performed if do_posix is set.
-     _________________________________________________________________
-   
-loadCookieJar
-
-   Usually used only internally. Loads up the cookiejar with cookies.
-     _________________________________________________________________
-   
-grab ([$tries])
-
-   Grab the image. If the url method is not used to give an absolute url,
-   then getRealURL is called before the image is fetched.
-   
-   If $tries is specified, then $tries are attempted before giving up.
-   $tries defaults to 10.
-     _________________________________________________________________
-   
-grab_new
-
-   Not Yet Implemented. Currently, it acts just like grab.
-     _________________________________________________________________
-   
-                                     BUGS
-                                       
-   getAllURLs and getRealURL should really be fixed so that they go out
-   to the 'net only once if they need to.
-   
-   POSIX date substitution screws up strings longer than 127 chars. At
-   least on Perl 5.004_04.
-   
-   Ummm... I am sure there are others...
-     _________________________________________________________________
-   
-                                    AUTHOR
-                                       
-   Mark A. Hershberger <mah@everybody.org>, http://everybody.org/mah
-     _________________________________________________________________
-   
-                                   SEE ALSO
-                                       
-   perl(1), strftime(3).

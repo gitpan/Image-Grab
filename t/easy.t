@@ -5,12 +5,18 @@
 
 BEGIN { $| = 1; print "1..2\n"; }
 END {print "not ok 1\n" unless $loaded;}
+
+unless (-f 't/test') {
+  print "1..0\n";
+  exit 0;
+}
+
 use Image::Grab;
 $loaded = 1;
 print "ok 1\n";
 
 my $image = new Image::Grab;
-$image->url("http://everybody.org/testdata/perl.gif");
+$image->url("http://everybody.org/mah/testdata/perl.gif");
 if($image->grab){
   print "ok 2\n";
 } else {

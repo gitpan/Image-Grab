@@ -2,10 +2,12 @@ ChangeLog
 MANIFEST
 Makefile.PL
 README
-Grab.pm
-Grab/RequestAgent.pm
+lib/Image/Grab.pm
+lib/Image/Grab.pod
+lib/Image/Grab/RequestAgent.pm
 t/comics.t
 t/cookies.t
+t/direct_grab.t
 t/easy.t
 t/md5.t
 t/type.t
