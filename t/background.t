@@ -1,7 +1,8 @@
 use Image::Grab;
+use Cwd;
 print "1..1\n";
 my $page = new Image::Grab;
-chomp(my $pwd = `pwd`);
+my $pwd = cwd;
 
 $ENV{DOMAIN} ||= "example.com"; # Net::Domain warnings
 $page->search_url("file:" . $pwd . "/t/data/bkgrd.html");

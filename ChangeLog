@@ -1,3 +1,16 @@
+2002-01-20  Mark A. Hershberger  <mah@everybody.org>
+
+	* lib/Image/Grab.pm (expand_url): fixed a bug if no match to
+	regexp is found.
+	(grab): fixed bug for simple (non-OO) grab()'s.
+
+	* lib/Image/Grab.pm: use either Digest::MD5 or MD5 module.  
+
+	* t/*: Increased platform independence by using Cwd instead of
+	`pwd` in the tests.
+
+	* Makefile.PL: Added "release" target for the maintainer.
+
 2000-08-10  Mark A. Hershberger  <mah@everybody.org>
 
 	* t/*: took away necessity for network connection on most tests.

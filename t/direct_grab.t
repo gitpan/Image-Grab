@@ -1,9 +1,12 @@
+use strict;
 use Image::Grab;
+use Cwd;
+
 print "1..1\n";
 
-chomp(my $pwd = `pwd`);
+my $pwd = cwd;
 $ENV{DOMAIN} ||= "example.com"; # Net::Domain warnings
-$image = Image::Grab->grab(URL=>"file:" . $pwd . "/t/data/perl.gif");
+my $image = Image::Grab->grab(URL=>"file://" . $pwd . "/t/data/perl.gif");
 
 if(defined $image) {
    print "ok 1\n";

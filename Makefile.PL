@@ -6,6 +6,39 @@ unless(lc(substr($r, 0, 1)) eq 'y' && open(C, ">t/have_network")) {
   close C;
 }
 
+sub MY::postamble {
+q{
+.PHONY: release
+
+README: README.pod
+	pod2text -w 80 README.pod > README
+
+index.html: lib/Image/Grab.pm
+	pod2html lib/Image/Grab.pm > index.html
+
+ChangeLog.html: ChangeLog
+	emacs -q --no-site-files '(htmlize-file "ChangeLog")'
+
+release: README index.html ChangeLog.html $(DISTVNAME).tar$(SUFFIX)
+	scp index.html everybody.org:public_html/hacks/perl/Image-Grab/Image-Grab-$(VERSION).html
+	scp ChangeLog.html everybody.org:public_html/hacks/perl/Image-Grab/
+	scp $(DISTVNAME).tar.$(SUFFIX) everybody.org:public_html/hacks/perl/Image-Grab/
+	ssh everybody.org ln -sf $(DISTVNAME).tar.$(SUFFIX) public_html/hacks/perl/Image-Grab/Image-Grab.tar.gz
+	stty -echo
+	perl -e 'use LWP::UserAgent;                                     \
+		use HTTP::Request::Common qw(POST);                     \
+		$$ua = LWP::UserAgent->new;                              \
+		print "Password: "; \
+		$$pass = <STDIN>; print "\n"; sub LWP::UserAgent::get_basic_credentials {("MAHEX", $$pass)}; \
+		my $$req = $$ua->request(POST "https://pause.perl.org/pause/authenquery", \
+			[ pause99_add_uri_uri =>                  \
+			q{http://mah.everybody.org/hacks/perl/Image-Grab-$(VERSION).tar.gz}, \
+			submit => q{SUBMIT_pause99_add_uri_uri} ]); \
+		print $$req->as_string;'
+	stty echo
+}}
+
+
 WriteMakefile(
     'NAME'	=> 'Image::Grab',
     'VERSION_FROM' => 'lib/Image/Grab.pm',
@@ -19,11 +52,3 @@ WriteMakefile(
     dist        => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
 );
 
-unless(-f "README") {
-  use Pod::Text;
-  `stty cols 80`;		# BETTER WAY?
-  open(R, ">README") || die "No README written";
-  *STDOUT = *R;
-  pod2text("README.pod");
-  close(R);
-}

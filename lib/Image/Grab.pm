@@ -3,8 +3,8 @@ package Image::Grab;
 use strict;
 use vars qw($VERSION @ISA @EXPORT @EXPORT_OK $AUTOLOAD);
 
-# $Id: Grab.pm,v 1.5 2001/03/11 03:03:09 mah Exp $
-$VERSION = '1.3';
+# $Id: Grab.pm,v 1.6 2002/01/19 21:14:01 mah Exp $
+$VERSION = '1.4';
 
 use Carp;
 use Config;
@@ -63,6 +63,7 @@ sub new {
 
   bless ($self, $class);
   $self->ua(new Image::Grab::RequestAgent);
+  $self->{have_DigestMD5} = eval {require Digest::MD5};
   $self->{have_MD5} = eval {require MD5;};
   $self->{have_magick} = eval {require Image::Magick;};
   return $self;
@@ -195,7 +196,8 @@ sub expand_url {
     $re = $self->regexp || '.';
     @match = grep {defined && /$re/} @link;
     # Return the nth
-    return $match[$self->index];
+    return $match[$self->index]
+      if @match;
   }
 
   # only if we fail.
@@ -228,7 +230,8 @@ sub grab {
   if(ref($self)) {
     $times ||= shift;
   } else {
-    $self = Image::Grab->new(@_)
+    my $action = lc shift;
+    $self = Image::Grab->new($action => @_);
   }
   my $req;
   my $count;
@@ -266,8 +269,13 @@ sub grab {
   # save what we got
   $self->image($rc->content);
   $self->date($rc->last_modified);
-  $self->md5(MD5->hexhash($self->image))  # This is how we set it
-    if $self->{have_MD5};	          # initially.
+
+  if($self->{have_DigestMD5}) {
+    $self->md5(Digest::MD5::md5_hex($self->image));
+  } elsif ($self->{have_MD5}) {
+    $self->md5(MD5->hexhash($self->image));
+  }
+
 
   $self->type($rc->content_type);
 
