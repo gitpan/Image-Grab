@@ -13,7 +13,7 @@ my $image = new Image::Grab;
 $image->url("http://localhost:$port/testdata/perl.gif");
 $image->grab;
 
-if($image->md5 eq "1c4ba43ed836e808f755c2a7ea281a99"){
+if($image->type eq "image/gif"){
    print "ok 1\n";
 } else {
    print "not ok 1\n";

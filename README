@@ -74,6 +74,11 @@ Accessor Methods
     The md5 sum for the image. Usually, you shouldn\'t try to set
     this field.
 
+  type
+
+    The type of information. Usually it will be a MIME type such as
+    "image/jpeg".
+
   cookiefile
 
     Where the cookiefile is located. Set this to the file containing
@@ -118,9 +123,6 @@ Other Methods
     Not Yet Implemented. Currently, it acts just like grab.
 
 BUGS
-    There is no way to tell what sort of image (jpeg, gif, png) has
-    been retrieved.
-
     It only understands as URLs strings that begin with "http://".
 
     Perhaps URL should not be so overloaded. Perhaps I should have

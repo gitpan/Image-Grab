@@ -1,5 +1,13 @@
-Revision history for Perl extension Image::Grab.
+1998-06-16  Mark Hershberger  <mah@eecs.tulane.edu>
 
-0.01  Thu May  7 13:35:42 1998
-	- original version; created by h2xs 1.18
+	* Grab.pm: Added type method to return the mime type of the object
+	  grabbed.
 
+	* t/type.t: Added simple test for type method.
+	
+	* t/md5.t: Hardcoded md5 value instead of relying on backtic'ed
+	  md5. (Test should no longer fail for non-Unix platforms.)
+
+	* t/TestDaemon.pm: Added TestDaemon module to help with
+          simplifing tests.  Helps tests pass even if they are done behind
+	  firewalls.

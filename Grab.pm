@@ -51,7 +51,7 @@ require AutoLoader;
 @EXPORT_OK = qw(
   &getRealURL &grab &new
 );
-$VERSION = '0.9';
+$VERSION = '0.9.1';
 
 # for now, this is how we find which "urls" are really urls.
 my $urlregexp="^http://";
@@ -305,6 +305,7 @@ sub grab {
   } while($count <= $times and not $rc->is_success);
 
   # Did we fail?
+
   return 0 unless $rc->is_success;
 
   # save what we got
@@ -312,6 +313,7 @@ sub grab {
   $self->date($rc->last_modified);
   $self->md5(MD5->hexhash($self->image));  # This is how we set it initially.
   $self->type($rc->content_type);
+
   return 1;
 }
 

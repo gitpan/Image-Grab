@@ -1,8 +1,11 @@
 Changes
-Grab.pm
-Grab/RequestAgent.pm
 MANIFEST
 Makefile.PL
 README
+Grab.pm
+Grab/RequestAgent.pm
+t/TestDaemon.pm
 t/easy.t
 t/md5.t
+t/type.t
+t/testdata/perl.gif
