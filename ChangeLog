@@ -1,5 +1,9 @@
 2004-10-27  Mark A. Hershberger  <mah@everybody.org>
 
+	* lib/Image/Grab.pm: Conditionalize %Config lookups.
+
+2004-10-27  Mark A. Hershberger  <mah@everybody.org>
+
 	* lib/Image/Grab.pm (grab): Now works if not prefixed by
 	"Image::Grab->"...
 	

@@ -31,7 +31,7 @@ release: README index.html $(DISTVNAME).tar$(SUFFIX)
                 print "\n"; sub LWP::UserAgent::get_basic_credentials {("MAHEX", $$pass)}; \
 		my $$req = $$ua->request(POST "https://pause.perl.org/pause/authenquery?ACTION=add_uri", \
 			[ pause99_add_uri_uri =>                  \
-			q{http://mah.everybody.org/hacks/perl/Image-Grab-$(VERSION).tar.gz}, \
+			q{http://mah.everybody.org/hacks/perl/Image-Grab/Image-Grab-$(VERSION).tar.gz}, \
 			submit => q{SUBMIT_pause99_add_uri_uri}]); \
 		print $$req->as_string;'
 	stty echo

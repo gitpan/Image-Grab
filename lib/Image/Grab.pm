@@ -4,7 +4,7 @@ use strict;
 use vars qw($VERSION @ISA @EXPORT @EXPORT_OK $AUTOLOAD);
 
 # $Id: Grab.pm,v 1.6 2002/01/19 21:14:01 mah Exp $
-$VERSION = '1.4.1';
+$VERSION = '1.4.2';
 
 use Carp;
 use Config;
@@ -37,8 +37,8 @@ my %fields = (
 	      url        => undef,
 	      search_url => undef,
 	      debug      => undef,
-	      do_posix   => ($Config{patchlevel} >= 5 and 
-			     $Config{baserev}    >= 5) ? 1 : undef,
+	      do_posix   => ($Config{patchlevel} && $Config{patchlevel} >= 5 and
+			     $Config{baserev} && $Config{baserev}    >= 5) ? 1 : undef,
 	     );
 
 sub DESTROY {}
@@ -229,7 +229,9 @@ sub grab {
   my $times = 1;
 
   if(ref($self)) {
-    $times ||= shift;
+    if(my $c = shift) {
+      $times = $c;
+    }
   } else {
     if($self eq __PACKAGE__) {
       $self = Image::Grab->new(@_);
