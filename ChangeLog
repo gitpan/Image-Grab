@@ -1,3 +1,10 @@
+2000-05-25  Mark A. Hershberger  <mah@everybody.org>
+
+	* Makefile.PL: trimmed PREREQ_PM since a lot of unnecessary stuff
+	was in there.  Also, I forgot to put in that Makefile.PL now asks
+	if you want to perform the tests since they require a 'net
+	connection.
+
 2000-05-23  Mark A. Hershberger  <mah@everybody.org>
 
 	* lib/Image/Grab.pm (get_new): added a probably buggy version for

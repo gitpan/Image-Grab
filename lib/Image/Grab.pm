@@ -1,12 +1,13 @@
 package Image::Grab;
 
-# $Id: Grab.pm,v 1.2 2000/04/10 03:49:56 mah Exp $
-
 use strict;
 use vars qw($VERSION @ISA @EXPORT @EXPORT_OK $AUTOLOAD);
+
+# $Id: Grab.pm,v 1.3 2000/05/25 05:53:33 mah Exp $
+$VERSION = '1.1';
+
 use Carp;
 use Config;
-
 require HTTP::Request;
 require HTML::TreeBuilder;
 require URI::URL;
@@ -19,7 +20,6 @@ require Exporter;
 @EXPORT_OK = qw(
   &expand_url &grab
 );
-$VERSION = '1.0';
 
 # %fields, new, AUTOLOAD are from perltoot
 
