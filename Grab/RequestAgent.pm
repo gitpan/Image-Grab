@@ -5,6 +5,8 @@
 # We make our own specialization of LWP::UserAgent that asks for
 # user/password if document is protected.
 
+# $Id: RequestAgent.pm,v 1.3 1999/05/18 18:09:22 hershbem Exp $
+
 package Image::Grab::RequestAgent;
 
 use strict;
@@ -14,45 +16,39 @@ require LWP::UserAgent;
 @EXPORT_OK = qw(
   &new
 );
-$VERSION='1.0 ';
+$VERSION='1.01';
 
-my @creds = (undef, undef);
+use Carp;
+
 my %realm;
 
 sub new { 
+  my $that = shift;
+  my $class = ref($that) || $that;
   my $self = LWP::UserAgent->new(@_);
-  $self->proxy('http', $ENV{http_proxy})
-      if defined $ENV{http_proxy};
-  $self->proxy('ftp', $ENV{ftp_proxy})
-      if defined $ENV{ftp_proxy};
-  $self->proxy('gopher', $ENV{gopher_proxy})
-      if defined $ENV{gopher_proxy};
+  
+  $self->env_proxy;
 
-  $self;
+  bless $self, $class;
+  return $self;
 }
 
 sub register_realm {
   my $self  = shift;
   my $realm = shift;
+  my $user  = shift;
   my $pass  = shift;
   
-  $realm{$realm} = $pass;
-}
-
-# A hack ... all my very own.
-sub set_password {
-  my $self = shift;
-  @creds = split('/', $_[0], 2);
+  $realm{$realm}->{user} = $user;
+  $realm{$realm}->{pass} = $pass;
 }
 
 sub get_basic_credentials  {
-  my $self = shift;
-  my $realm = $_[0];
-  
+  my ($self, $realm) = @_;
+
   if(defined $realm{$realm}) {
-    return split('/', $realm{$realm}, 2);
-  } else {
-    return @creds;
+    return ($realm{$realm}->{user},
+	    $realm{$realm}->{pass});
   }
 }
 

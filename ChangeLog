@@ -1,3 +1,32 @@
+1999-06-12  Mark A. Hershberger  <mah@everybody.org>
+
+	* README: Noted do_posix.
+
+	* Grab.pm: Began work on debug method.  Found bug in strftime.
+	Changed behavior of POSIX date substitution.  Added do_posix
+	method.
+	
+1999-06-09  Mark A. Hershberger  <mah@everybody.org>
+
+	* README: Added install and test instructions.
+
+	* t/comics.t: Split out cookie-dependent tests.
+
+	* t/cookies.t: Created for cookie dependent tests.
+
+1999-05-18  Mark A. Hershberger  <mah@everybody.org>
+
+	* Grab/RequestAgent.pm (new): Updated & simplified proxy code
+
+	* Grab/RequestAgent.pm (register_realm): Fixed code so it actually
+	works.
+
+	* Grab/RequestAgent.pm (get_basic_credentials): Fixed code.
+
+	* Grab/RequestAgent.pm: Removed some crufty functions.
+	
+	* Grab.pm (realm): Fixed realm problem.  Interface Change!
+
 1999-02-19  Mark A. Hershberger  <mah@everybody.org>
 
 	* t/easy.t, t/md5.t, t/type.t: Removed fork dependency and set it

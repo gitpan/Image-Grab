@@ -1,5 +1,7 @@
 package Image::Grab; # -*- cperl -*-
 
+# $Id: Grab.pm,v 1.13 1999/06/09 22:18:30 hershbem Exp $
+
 =head1 NAME
 
 Image::Grab - Perl extension for Grabbing images off the Internet.
@@ -63,7 +65,7 @@ require AutoLoader;
 @EXPORT_OK = qw(
   &getRealURL &grab &new
 );
-$VERSION = '0.9.2';
+$VERSION = '0.9.5';
 
 # %fields, new, AUTOLOAD are from perltoot
 
@@ -79,6 +81,8 @@ my %fields = (
 	      type       => undef,
 	      ua         => undef,
 	      url        => undef,
+	      debug      => undef,
+	      do_posix   => undef,
 	     );
 
 =head1 Accessor Methods
@@ -108,6 +112,11 @@ if you wish to use the cookie file for the image.
 
 Usually only used internally.  The cookiejar for the image.
 
+=head2 do_posix
+
+Tells Image::Grab to do POSIX date substitution.  This is off by
+default until a bug that I found is fixed.
+
 =head2 date
 
 The date that the image was last updated.  The date is represented in 
@@ -133,7 +142,7 @@ example, if regexp="mac.*\.gif" and refer="http://www.example.com", then
 when a grab is performed, the page at www.example.com is searched to see
 if any images on the page match the regular expression.
 
-CAUTION! POSIX time string expansion is performed.
+POSIX time string expansion is performed is do_posix is set.
 
 =head2 type
 
@@ -174,7 +183,7 @@ A regular expression that will match the URL of the image.  If
 C<index> is not set, then the first image that matches will be used.
 If C<index> is set, then the I<n>th image that matches will be used.
 
-CAUTION! POSIX time string expansion is performed.
+POSIX time string expansion is performed if do_posix is set.
 
 Example:
 
@@ -189,7 +198,7 @@ $image->regexp(".*\.gif");
 
 The fully qualified URL of the image.
 
-CAUTION! POSIX time string expansion is performed.
+POSIX time string expansion is performed if do_posix is set.
 
 Example:
 
@@ -227,16 +236,20 @@ sub AUTOLOAD {
   }
 
   if(@_) {
-    return $self->{$name} = shift;
-  } else {
+    my $val = shift;
+    carp "$name: $val" if $self->debug;
+    return $self->{$name} = $val;
+  } elsif (defined $self->{$name}) {
     return $self->{$name};
   }
+
+  return undef;
 
 }
 
 =head1 Other Methods
 
-=head2 realm($user, $password)
+=head2 realm($realm, $user, $password)
 
 Provides a username/password pair for the realm the image is in.
 
@@ -248,13 +261,12 @@ sub realm {
   my $type = ref($self)
     or croak "$self is not an object";
 
-  if(@_){
-    my ($user, $pass) = @_;
+  if($#_ == 2){
+    $self->ua->register_realm(shift, shift, shift);
+    return 1;
+  } 
 
-    $self->ua->register_realm($user, $pass);
-  }
-
-  return 1;
+  croak "usage: realm(\$realm, \$user, \$pass)";
 }
 
 =head2 getAllURLs ([$tries])
@@ -285,7 +297,8 @@ sub getAllURLs {
   $self->loadCookieJar;
 
   @now = localtime;
-  $self->refer(strftime $self->refer, @now) if defined $self->refer;
+  $self->refer(strftime $self->refer, @now) 
+    if defined $self->refer and defined $self->do_posix;
   croak "Need to specify a refer page!" if !defined $self->refer;
   $req = $self->ua->request(new HTTP::Request 'GET', $self->refer);
 
@@ -318,7 +331,8 @@ sub getAllURLs {
 =head2 getRealURL ([$tries])
 
 Returns the actual URL of the image specified.  Performs POSIX time
-string expansion (see C<strftime>) using the current time.
+string expansion (see C<strftime>) using the current time if do_posix
+is set.
 
 You can use this method to get the URL for an image if that is all you
 need.
@@ -331,7 +345,7 @@ refer URL is not of type text/html, or if no image that matches the
 specs is found.
 
 If C<url> is given a full URL, then it is returned with POSIX time
-string expansion performed.
+string expansion performed if do_posix is set.
 
 =cut
 
@@ -349,10 +363,12 @@ sub getRealURL {
   @now = localtime;
 
   if(defined $self->url) {
-    $self->url(strftime($self->url, @now));
+    $self->url(strftime($self->url, @now)) 
+      if defined $self->do_posix;
     return $self->url;
   }
-  $self->regexp(strftime($self->regexp, @now)) if defined $self->regexp;
+  $self->regexp(strftime($self->regexp, @now)) 
+    if defined $self->regexp and defined $self->do_posix;
 
   @link = $self->getAllURLs($times);
   return undef if !defined @link;
@@ -413,7 +429,7 @@ sub grab {
   my $self = shift;
   my $type = ref($self)
     or croak "$self is not an object";
-  my $times = (shift or 10);
+  my $times = (shift or 1);
   my $req;
   my $count;
   my $rc;
@@ -426,6 +442,7 @@ sub grab {
 
   # make sure we have a url
   croak "Couldn't determine an absolute URL!\n" unless defined $self->url;
+  carp "Fetching URL: ", $self->url if $self->debug;
 
   # Set it up
   $req = new HTTP::Request 'GET', $self->url;
@@ -444,6 +461,8 @@ sub grab {
   # Did we fail?
 
   return 0 unless $rc->is_success;
+
+  carp "Message: ", $rc->message if $self->debug;
 
   # save what we got
   $self->image($rc->content);
@@ -478,11 +497,14 @@ __END__
 getAllURLs and getRealURL should really be fixed so that they go out
 to the 'net only once if they need to.
 
+POSIX date substitution screws up strings longer than 127 chars.  At
+least on Perl 5.004_04.
+
 Ummm... I am sure there are others...
 
 =head1 AUTHOR
 
-Mark A. Hershberger <mah@everybody.org>
+Mark A. Hershberger <mah@everybody.org>, http://everybody.org/mah
 
 =head1 SEE ALSO
 

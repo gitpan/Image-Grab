@@ -3,14 +3,36 @@
 BEGIN { $| = 1; }
 use Image::Grab;
 use diagnostics;
+
+# You need cookies for www.chron.com for this to work.
+# See http://www.chron.com/content/comics
+
+if(-f "$ENV{HOME}/.netscape/cookies") {
+  open(COOKIE, "$ENV{HOME}/.netscape/cookies");
+  unless (grep {/www.chron.com/} <COOKIE>) {
+    print "1..0\n";
+    close(COOKIE);
+    exit 0;
+  }
+  close(COOKIE);
+} else {
+  print "1..0\n";
+  exit 0;
+}
+
 my $toons = [
-{Name => "Arlo And Janis",
- regexp => "arlonjanis[0-9]+.*\.gif",
- refer => "http://www.unitedmedia.com/comics/arlonjanis/ab.html",
-},
-{Name => "RobotMan",
- regexp => "robotman[0-9]+\.gif",
- refer => "http://www.unitedmedia.com/comics/robotman/ab.html",
+# These require cookies
+{Name => "One Big Happy",
+ url => "http://www.chron.com/content/chronicle/comics/One_Big_Happy.g.gif",
+ "link" => "http://www.chron.com/content/comics",
+ },
+{Name => "9 Chickweed Lane",
+ url => "http://www.chron.com/content/chronicle/comics/9_Chickweed_Lane.g.gif",
+ "link" => "http://www.chron.com/content/comics",
+ },
+{Name => "Liberty Meadows",
+ url => "http://www.chron.com/content/chronicle/comics/Liberty_Meadows.g.gif",
+ "link" => "http://www.chron.com/content/comics",
 }];
 
 print "1..", $#{$toons} + 1,"\n";

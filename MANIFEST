@@ -5,6 +5,7 @@ README
 Grab.pm
 Grab/RequestAgent.pm
 t/comics.t
+t/cookies.t
 t/easy.t
 t/md5.t
 t/type.t
