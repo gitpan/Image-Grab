@@ -4,7 +4,7 @@ use strict;
 use vars qw($VERSION @ISA @EXPORT @EXPORT_OK $AUTOLOAD);
 
 # $Id: Grab.pm,v 1.6 2002/01/19 21:14:01 mah Exp $
-$VERSION = '1.4';
+$VERSION = '1.4.1';
 
 use Carp;
 use Config;
@@ -227,11 +227,15 @@ sub loadCookieJar {
 sub grab {
   my $self = shift;
   my $times = 1;
+
   if(ref($self)) {
     $times ||= shift;
   } else {
-    my $action = lc shift;
-    $self = Image::Grab->new($action => @_);
+    if($self eq __PACKAGE__) {
+      $self = Image::Grab->new(@_);
+    } else {
+      $self = Image::Grab->new(lc $self, @_);
+    }
   }
   my $req;
   my $count;
@@ -259,6 +263,8 @@ sub grab {
   do{
     $count++;
     $rc = $self->ua->request($req);
+    carp "Got: ", $rc->content
+      if $self->debug;
   } while($count <= $times and not $rc->is_success);
 
   # Did we fail?

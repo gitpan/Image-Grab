@@ -1,3 +1,11 @@
+2004-10-27  Mark A. Hershberger  <mah@everybody.org>
+
+	* lib/Image/Grab.pm (grab): Now works if not prefixed by
+	"Image::Grab->"...
+	
+	* t/manpage.t: Tests to verify that the manpage examples will
+	work.
+
 2002-01-20  Mark A. Hershberger  <mah@everybody.org>
 
 	* lib/Image/Grab.pm (expand_url): fixed a bug if no match to

@@ -6,8 +6,9 @@ Image::Grab - Perl extension for Grabbing images off the Internet.
 
   # If you call grab without instantiating an Image::Grab, then you
   # can pass grab args and it will instantiate one for you and return
-  # the result.
+  # whatever the image is.
   use Image::Grab qw(grab);
+  # $image should contain GIF data after this.
   $image = grab(URL=>'http://www.example.com/test.gif');
 
   use Image::Grab;
@@ -151,6 +152,8 @@ url, then L<expand_url|/"expand_url_tries_"> is called before the image is fetch
 
 If $tries is specified, then $tries are attempted before giving up.
 $tries defaults to 10.
+
+Returns the image grabbed.
 
 Example:
 
