@@ -1,8 +1,7 @@
 #!/usr/local/bin/perl
 
-BEGIN { $| = 1; }
-
-unless (-f 't/test') {
+# Net connection?
+if(!-f "t/have_network") {
   print "1..0\n";
   exit 0;
 }

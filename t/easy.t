@@ -1,24 +1,13 @@
-# Before `make install' is performed this script should be runnable with
-# `make test'. After `make install' it should work as `perl test.pl'
-
-######################### We start with some black magic to print on failure.
-
-BEGIN { $| = 1; print "1..2\n"; }
-END {print "not ok 1\n" unless $loaded;}
-
-unless (-f 't/test') {
-  print "1..0\n";
-  exit 0;
-}
-
 use Image::Grab;
-$loaded = 1;
-print "ok 1\n";
-
+print "1..1\n";
 my $image = new Image::Grab;
-$image->url("http://everybody.org/mah/testdata/perl.gif");
-if($image->grab){
-  print "ok 2\n";
+
+chomp(my $pwd = `pwd`);
+$ENV{DOMAIN} ||= "example.com"; # Net::Domain warnings
+$image->url("file:" . $pwd . "/t/data/perl.gif");
+
+if(defined $image->grab){
+  print "ok 1\n";
 } else {
-  print "not ok 2\n";
+  print "not ok 1\n";
 }

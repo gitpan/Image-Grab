@@ -3,8 +3,8 @@ package Image::Grab;
 use strict;
 use vars qw($VERSION @ISA @EXPORT @EXPORT_OK $AUTOLOAD);
 
-# $Id: Grab.pm,v 1.3 2000/05/25 05:53:33 mah Exp $
-$VERSION = '1.1';
+# $Id: Grab.pm,v 1.4 2000/05/27 08:07:09 mah Exp $
+$VERSION = '1.2';
 
 use Carp;
 use Config;
@@ -133,18 +133,18 @@ sub getAllURLs {
   if($count == $times && !$req->is_success){
     return undef;
   }
-  return undef unless $req->content_type eq 'text/html';
-  
+
   # Get the base url
   my $base_url = $req->base;
-  
+
   # Get the img tags out of the document.
   my $parser = new HTML::TreeBuilder;
   $parser->parse($req->content);
   $parser->eof;
-  foreach (@{$parser->extract_links(qw(img))}) {
+  foreach (@{$parser->extract_links(qw(img td body))}) {
     push @link, URI::URL::url($$_[0])->abs($base_url)->as_string;
-  }  
+  }
+  $parser->delete;
 
   return @link;
 }
@@ -169,7 +169,7 @@ sub expand_url {
   my @link;
   my @now;
 
-  # Expand any POSIX time excapes
+  # Expand any POSIX time escapes
   @now = localtime;
 
   if(defined $self->url) {
@@ -181,13 +181,14 @@ sub expand_url {
     if defined $self->regexp and defined $self->do_posix;
 
   @link = $self->getAllURLs($times);
-  return undef if !defined @link;
+  return undef if !@link;
 
   # if this is a relative position tag...
   if($self->regexp || $self->index) {
     my (@match, $re);
 
-    # set index to match fist image
+    $self->refer($self->search_url);
+    # set index to match first image
     $self->index(0) if !defined $self->index;
     $re = $self->regexp || '.';
     @match = grep {defined && /$re/} @link;

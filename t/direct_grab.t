@@ -1,14 +1,9 @@
-BEGIN { $| = 1; print "1..1\n"; }
 use Image::Grab;
-use diagnostics;
+print "1..1\n";
 
-
-unless (-f 't/test') {
-  print "1..0\n";
-  exit 0;
-}
-
-$image = Image::Grab->grab(URL=>"http://everybody.org/testdata/perl.gif");
+chomp(my $pwd = `pwd`);
+$ENV{DOMAIN} ||= "example.com"; # Net::Domain warnings
+$image = Image::Grab->grab(URL=>"file:" . $pwd . "/t/data/perl.gif");
 
 if(defined $image) {
    print "ok 1\n";

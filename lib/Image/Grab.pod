@@ -69,18 +69,18 @@ The following are the retrieval methods and properties available for
 any Image::Grab object.
 
 One of the following should be set to specify the image.  If either
-L<regexp|/"regexp"> or L<index|/"index"> are used to specify the image, then
-L<search_url|/"search_url"> must be set to specify the page to be searched for the
+L<regexp> or L<index> are used to specify the image, then
+L<search_url> must be set to specify the page to be searched for the
 image.
 
-B<Image::Grab> will use the data in the following order: L<url|/"url">,
-L<regexp|/"regexp">, L<index|/"index">.
+B<Image::Grab> will use the data in the following order: L<url>,
+L<regexp>, L<index>.
 
-L<refer|/"refer">, L<regexp|/"regexp">, L<search_url|/"search_url">
-and L<url|/"url"> all have POSIX time string expansion performed on
-them by the L<expand_url|/"expand_url_tries_"> method when
-L<do_posix|/"do_posix"> is set.  Thus, if you wish to have a '%'
-character in your URL, you must put '%%'.
+L<refer>, L<regexp>, L<search_url> and L<url> all have POSIX time
+string expansion performed on them by the
+L<expand_url|/"expand_url_tries_"> method when L<do_posix> is set.
+Thus, if you wish to have a '%' character in your URL, you must put
+'%%'.
 
 =head2 url
 
@@ -88,7 +88,7 @@ The fully qualified URL of the image.  This method is included simply
 for completeness and convenience.  If this is all you need, you might
 check out LWP::Simple.  (Although, the date expansion is nice...)
 
-POSIX time string expansion is performed if L<do_posix|/"do_posix"> is set.
+POSIX time string expansion is performed if L<do_posix> is set.
 
 Example:
 
@@ -96,14 +96,17 @@ Example:
 
 =head2 search_url
 
-If L<regexp|/"regexp"> and/or L<index|/"index"> methods are used to specify an image then
+If L<regexp> and/or L<index> methods are used to specify an image then
 the url in the search_url field will be used to find the image.  For
 example, if C<regexp="mac.*\.gif"> and
 C<search_url="http://www.example.com">, then when a grab is performed,
 the page at www.example.com is searched to see if any images on the
 page match the regular expression C<"mac.*\.gif">.
 
-POSIX time string expansion is performed if L<do_posix|/"do_posix"> is set.
+Also, when Image::Grab finally grabs the image, it uses the
+L<search_url> as the referer field.
+
+POSIX time string expansion is performed if L<do_posix> is set.
 
 Example:
 
@@ -113,7 +116,7 @@ Example:
 
 An integer indicating the image on the page to grab.  For instance,
 '1' would find the second image on the page pointed to by
-L<search_url|/"search_url">.  Used in conjunction with L<regexp|/"regexp">, it specifies which
+L<search_url>.  Used in conjunction with L<regexp>, it specifies which
 image to grab that the regular expression matches.
 
 Example:
@@ -125,14 +128,14 @@ Example:
 =head2 regexp
 
 A regular expression that will match the URL of the image.  If
-L<index|/"index"> is not set, then the first image that matches will be used.
-If L<index|/"index"> is set, then the I<n>th image (base 0) that matches will
+L<index> is not set, then the first image that matches will be used.
+If L<index> is set, then the I<n>th image (base 0) that matches will
 be used.
 
-Set L<search_url|/"search_url"> to the web page that you want to search with this
+Set L<search_url> to the web page that you want to search with this
 regular expression.
 
-POSIX time string expansion is performed if L<do_posix|/"do_posix"> is set.
+POSIX time string expansion is performed if L<do_posix> is set.
 
 Example:
 
@@ -143,7 +146,7 @@ Example:
 
 Grab the image.  Returns $image->image;
 
-If the L<url|/"url"> method is not used to give an absolute
+If the L<url> method is not used to give an absolute
 url, then L<expand_url|/"expand_url_tries_"> is called before the image is fetched.
 
 If $tries is specified, then $tries are attempted before giving up.
@@ -156,18 +159,18 @@ Example:
 
 =head2 grab_new ([$tries])
 
-If neither L<date|/"date"> nor L<md5|/"md5> are set, than this method acts
+If neither L<date> nor L<md5> are set, than this method acts
 identically to L<grab|/"grab_tries_">.  
 
-If L<md5|/"md5"> is set, then the grab is performed only if the checksum of
+If L<md5> is set, then the grab is performed only if the checksum of
 the newer image is different than the current checksum.
 
-If L<date|/"date"> is set than the grab is performed only if the image has
-been modified since L<date|/"date">.
+If L<date> is set than the grab is performed only if the image has
+been modified since L<date>.
 
-If both L<date|/"date"> and L<md5|/"md5"> are set then the conditions are ANDed.
+If both L<date> and L<md5> are set then the conditions are ANDed.
 That is, the image is returned only if it has been modified since
-L<date|/"date"> and its checksum is different than L<md5|/"md5">.
+L<date> and its checksum is different than L<md5>.
 
 =head1 Image Properties
 
@@ -211,8 +214,8 @@ as "image/jpeg".
 
 =head1 Other Properties
 
-These are miscellaneous properties.  L<do_posix|/"do_posix"> and
-L<cookiefile|/"cookiefile"> are the only ones you should need to use.
+These are miscellaneous properties.  L<do_posix> and L<cookiefile> are
+the only ones you should need to use.
 
 =head2 do_posix
 
@@ -258,7 +261,7 @@ all its methods.
 
 When you do a L<grab|/"grab_tries_">, this url will be given as the referring URL.
 
-POSIX time string expansion is performed if L<do_posix|/"do_posix"> is set.
+POSIX time string expansion is performed if L<do_posix> is set.
 
 =head1 Other Methods
 
@@ -269,14 +272,13 @@ Provides a username/password pair for grabbing the image.
 =head2 getAllURLs ([$tries])
 
 Returns a list of URLs pointing to images from the page pointed to by
-L<search_url|/"search_url">.  Of course, L<search_url|/"search_url"> must be set for this method
+L<search_url>.  Of course, L<search_url> must be set for this method
 to be of any use.
 
 If $tries is specified, then $tries are attempted before giving up.
 $tries defaults to 10.
 
-Returns undef if no connection is made in $tries attempts or if the
-URL is not of type text/html.
+Returns undef if no connection is made in $tries attempts.
 
 =head2 expand_url ([$tries])
 
@@ -293,11 +295,11 @@ If $tries is specified, then $tries are attempted before giving up.
 $tries defaults to 10.
 
 Returns undef if no connection is made in $tries attempts, if the
-L<search_url|/"search_url"> URL is not of type text/html, or if no image that
+L<search_url> URL is not of type text/html, or if no image that
 matches the specs is found.
 
-If L<url|/"url"> is given a full URL, then it is returned with POSIX time
-string expansion performed if L<do_posix|/"do_posix"> is set.
+If L<url> is given a full URL, then it is returned with POSIX time
+string expansion performed if L<do_posix> is set.
 
 The I<getRealURL> method is deprecated.
 
