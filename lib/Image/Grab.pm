@@ -3,8 +3,8 @@ package Image::Grab;
 use strict;
 use vars qw($VERSION @ISA @EXPORT @EXPORT_OK $AUTOLOAD);
 
-# $Id: Grab.pm,v 1.4 2000/05/27 08:07:09 mah Exp $
-$VERSION = '1.2';
+# $Id: Grab.pm,v 1.5 2001/03/11 03:03:09 mah Exp $
+$VERSION = '1.3';
 
 use Carp;
 use Config;
@@ -40,6 +40,8 @@ my %fields = (
 	      do_posix   => ($Config{patchlevel} >= 5 and 
 			     $Config{baserev}    >= 5) ? 1 : undef,
 	     );
+
+sub DESTROY {}
 
 sub new {
   my $that  = shift;
@@ -177,7 +179,7 @@ sub expand_url {
       if defined $self->do_posix;
     return $self->url;
   }
-  $self->regexp(strftime($self->regexp, @now)) 
+  $self->regexp(strftime($self->regexp, @now))
     if defined $self->regexp and defined $self->do_posix;
 
   @link = $self->getAllURLs($times);
@@ -192,7 +194,7 @@ sub expand_url {
     $self->index(0) if !defined $self->index;
     $re = $self->regexp || '.';
     @match = grep {defined && /$re/} @link;
-    # Return the nth 
+    # Return the nth
     return $match[$self->index];
   }
 
@@ -236,14 +238,14 @@ sub grab {
   $self->loadCookieJar;
 
   # need to find image on page?
-  $self->url($self->expand_url($times));
+  my $url = $self->expand_url($times);
 
   # make sure we have a url
-  croak "Couldn't determine an absolute URL!\n" unless defined $self->url;
-  carp "Fetching URL: ", $self->url if $self->debug;
+  croak "Couldn't determine an absolute URL!\n" unless defined $url;
+  carp "Fetching URL: ", $url if $self->debug;
 
   # Set it up
-  $req = new HTTP::Request 'GET', $self->url;
+  $req = new HTTP::Request 'GET', $url;
   $req->push_header('Referer', $self->refer) if defined $self->refer;
   if($self->cookiejar){
     $self->cookiejar->add_cookie_header($req);

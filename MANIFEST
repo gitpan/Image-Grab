@@ -1,7 +1,6 @@
 ChangeLog
 MANIFEST
 Makefile.PL
-README.pod
 README
 lib/Image/Grab.pm
 lib/Image/Grab.pod
