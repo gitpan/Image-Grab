@@ -1,0 +1,136 @@
+NAME
+    Image::Grab - Perl extension for Grabbing images off the
+    Internet.
+
+SYNOPSIS
+      use Image::Grab;
+      $pic = new Image::Grab;
+
+      # The simplest case of a grab
+      $pic->url('http://www.url.com/someimage.jpg')
+      $pic->grab;
+
+      # How to get at the image
+      open(DISPLAY, "| display -");
+      print DISPLAY $pic->image;
+      close(DISPLAY)
+
+      # A slightly more complicated case
+      $pic->url('.*logo.*\.gif');
+      $pic->refer('http://www.gtk.com');
+      $pic->grab;
+
+      # Get a weather forcast (The regexp finds the image despite the 
+      $pic->url('msy.*\.gif');
+      $pic->refer('http://www.intellicast.com/weather/msy/content.shtml');
+      $pic->grab;
+
+DESCRIPTION
+    Image::Grab is a simple way to get images with URLs that change
+    constantly.
+
+Accessor Methods
+    The following are the accessor methods availible for any
+    Image::Grab object. Accessor methods are used to get or set
+    information for an object. For example,
+
+      $img->refer("http://www.yahoo.com");
+
+    would set the refer field and
+
+      $img->refer;
+
+    would return the information contained in the refer field.
+
+  refer
+
+    When you do a grab, this url will be given as the referring URL.
+    If the information contained in the 'url' property is not a URL,
+    then the information from the URL in the refer field will be
+    used to find the image. For example, if url="mac.*\.gif" and
+    refer="http://www.yahoo.com", then when a grab is performed, the
+    page at www.yahoo.com is searched to see if any images on the
+    page match the regular expression in url. The first one that
+    matches is grabbed.
+
+  url
+
+    The url that is ultimatly grabbed. This should be set before any
+    grab is done. It can be a straight url, a regular expression, or
+    an index for the image. For an example of a regular expression,
+    see the section on refer. Indexes begin with a pound sign ("#")
+    and are followed by a number that indicates the image on the
+    page. For instance, "#2" would find the second image on the page
+    pointed to by the refer.
+
+  date
+
+    The date that the image was last updated. The date is
+    represented in the number of seconds from epoch where epoch is
+    January 1, 1970.
+
+  md5
+
+    The md5 sum for the image. Usually, you shouldn\'t try to set
+    this field.
+
+  cookiefile
+
+    Where the cookiefile is located. Set this to the file containing
+    the cookies if you wish to use the cookie file for the image.
+
+  cookiejar
+
+    Usually only used internally. The cookiejar for the image.
+
+  image
+
+    The actual image. Usually, you should\'t try to set this field.
+
+  ua
+
+    Usually only used internally. The user agent used to get the
+    image.
+
+Other Methods
+  realm($user, $password)
+
+    Provides a username/password pair for the realm the image is in.
+
+  getRealURL
+
+    Returns the actual URL of the image. This method is called
+    internally to determine the URL of the image if the information
+    contained in the URL field is not a url.
+
+    You can use this method to get the URL for an image if that is
+    all you need.
+
+  grab
+
+    Grab the image. url must contain an actual URL or information
+    that can produce a URL before this method can be used. If url
+    does not contain a URL, then getRealURL is called before the
+    image is fetched.
+
+  grab_new
+
+    Not Yet Implemented. Currently, it acts just like grab.
+
+BUGS
+    There is no way to tell what sort of image (jpeg, gif, png) has
+    been retrieved.
+
+    It only understands as URLs strings that begin with "http://".
+
+    Perhaps URL should not be so overloaded. Perhaps I should have
+    'regexp' and 'index' accessor methods.
+
+    Ummm... I am sure there are others...
+
+AUTHOR
+    Mark 'Hex' Hershberger <mah@eecs.tulane.edu>
+
+SEE ALSO
+    perl(1).
+
