@@ -21,6 +21,13 @@ my %realm;
 
 sub new { 
   my $self = LWP::UserAgent->new(@_);
+  $self->proxy('http', $ENV{http_proxy})
+      if defined $ENV{http_proxy};
+  $self->proxy('ftp', $ENV{ftp_proxy})
+      if defined $ENV{ftp_proxy};
+  $self->proxy('gopher', $ENV{gopher_proxy})
+      if defined $ENV{gopher_proxy};
+
   $self;
 }
 

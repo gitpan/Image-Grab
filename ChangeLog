@@ -1,0 +1,36 @@
+1999-02-19  Mark A. Hershberger  <mah@everybody.org>
+
+	* t/easy.t, t/md5.t, t/type.t: Removed fork dependency and set it
+	to a "live" site.
+
+	* Grab/RequestAgent.pm (new): Added code to recognize the proxy
+	variables for firewalls.
+
+	* t/TestDaemon.pm: Removed to fix fork dependency.
+	
+	* t/comics.t: Added test to demonstrate the feature with live
+	images and to excercise new methods.
+
+	* Makefile.PL: Cosmetic changes.  Added HTTP::Cookies to required
+	packages
+
+	* Grab.pm (loadCookieJar): Added convenience method.
+
+1999-02-18  Mark A. Hershberger  <mah@everybody.org>
+
+	* Grab.pm: Broke url method up into url, refer, and index method.
+	Prettied up the man page some.  Changed all example urls to
+	reserved domain example.com.
+	(getAllURLs): Added function to get all image URLs from a page.
+	(getRealURL): Added POSIX time string expansion.
+
+1998-06-16  Mark Hershberger  <mah@eecs.tulane.edu>
+
+	* Grab.pm: Added type method to return the mime type of the object
+
+	* t/md5.t: Hardcoded md5 value instead of relying on backtic'ed
+	  md5. (Test should no longer fail for non-Unix platforms.)
+
+	* t/TestDaemon.pm: Added TestDaemon module to help with
+          simplifing tests.  Helps tests pass even if they are done behind
+	  firewalls.

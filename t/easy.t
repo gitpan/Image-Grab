@@ -9,15 +9,8 @@ use Image::Grab;
 $loaded = 1;
 print "ok 1\n";
 
-######################### End of black magic.
-
-use lib qw{t};
-use TestDaemon;
-
-my $port = TestDaemon::dotest(1);
-
 my $image = new Image::Grab;
-$image->url("http://localhost:$port/testdata/perl.gif");
+$image->url("http://everybody.org/testdata/perl.gif");
 if($image->grab){
   print "ok 2\n";
 } else {

@@ -4,13 +4,8 @@
 BEGIN { $| = 1; print "1..1\n"; }
 use Image::Grab;
 
-use lib qw{t};
-use TestDaemon;
-
-my $port = TestDaemon::dotest(1);
-
 my $image = new Image::Grab;
-$image->url("http://localhost:$port/testdata/perl.gif");
+$image->url("http://everybody.org/testdata/perl.gif");
 $image->grab;
 
 if($image->type eq "image/gif"){
